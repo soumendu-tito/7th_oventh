@@ -1,0 +1,25 @@
+<footer>
+    <p>&copy; 2025 7th Ovent</p>
+  </footer>
+</body>
+</html>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script>
+  $(document).ready(function(){
+   
+    $('.slider').slick({
+      slidesToShow: 3,
+      slidesToScroll: 1,
+      autoplay: true,
+      dots: true,
+      arrows: true,
+      responsive: [
+        {
+          breakpoint: 768,
+          settings: { slidesToShow: 1 }
+        }
+      ]
+    });
+  });
+</script>

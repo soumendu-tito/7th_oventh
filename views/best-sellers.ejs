@@ -1,0 +1,19 @@
+<div class="best_heading">
+<h2>Best Sellers</h2>
+<a href="">View All Products</a>
+</div>
+<div class="product-grid">
+  <% products_best.forEach(p => { %>
+    <div class="product-card">
+      <img src="<%= p.image %>" alt="<%= p.name %>">
+      <h3><%= p.name %></h3>
+      <p class="com_price">₹<%= p.compare_price %></p>
+      <p>₹<%= p.price %></p>
+      <form action="/add-to-cart/<%= p._id %>" method="POST">
+        <button type="submit">Add to Cart</button>
+      </form>
+    
+    
+    </div>
+  <% }) %>
+</div>

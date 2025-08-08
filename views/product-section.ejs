@@ -1,0 +1,17 @@
+<div class="prod">
+<i>Our Offers</i>
+<h2>Discover The Best Deals</h2>
+<h4><b>7th Ovent</b></h4>
+</div>
+<div class="slider">
+  <% products.forEach(product => { %>
+    <div class="product-card">
+      <img src="<%= product.image %>" alt="<%= product.name %>"/>
+      <h3><%= product.name %></h3>
+      <p>₹ <%= product.price %></p>
+      <form action="/add-to-cart/<%= product._id %>" method="POST">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+  <% }) %>
+</div>

@@ -1,0 +1,11 @@
+<h2>Your Cart</h2>
+<ul>
+  <% cart.forEach(item => { %>
+    <li><%= item.name %> - ₹<%= item.price %> x <%= item.qty %></li>
+  <% }) %>
+</ul>
+<p>Total: ₹<%= total %></p>
+
+<form action="/checkout" method="GET">
+  <button type="submit">Proceed to Checkout</button>
+</form>
