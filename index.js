@@ -5,6 +5,10 @@ const session = require('express-session');
 const mongoose = require('mongoose');
 
 const app = express();
+const paymentRoutes = require('./routes/payment');
+const Stripe = require('stripe');
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+app.use('/api/payment', paymentRoutes);
 // Middleware
 app.use(express.urlencoded({ extended: true })); // <-- this is crucial
 app.use(express.json());
@@ -125,13 +129,56 @@ app.post('/place-order', async (req, res) => {
   await order.save();
 
   // Clear cart
-  req.session.cart = [];
-
-  res.redirect('/order-success');
+ 
+  res.redirect(307,'/create-checkout-session');
 });
 app.get('/order-success', (req, res) => {
+  req.session.cart = [];
+
   res.send("<h2>Order placed successfully!</h2><a href='/'>Back to Shop</a>");
 });
+app.get('/cancel', (req, res) => {
+  res.send("<h2>Order Not placed !</h2><a href='/'>Back to Shop</a>");
+});
+
+app.get('/clr_cart', (req, res) => {
+  req.session.cart = [];
+  res.send("<h2>Cart Deleted !</h2><a href='/'>Back to Shop</a>");
+});
+
+app.post('/create-checkout-session', async (req, res) => {
+  try {
+    const cart = req.session.cart || [];
+    if (cart.length === 0) {
+      return res.redirect('/cart');
+    }
+
+    const line_items = cart.map(item => ({
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: item.name,
+        },
+        unit_amount: Math.round(item.price * 100), // dollars → cents
+      },
+      quantity: item.qty,
+    }));
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items,
+      mode: 'payment',
+      success_url: 'http://localhost:3000/order-success',
+      cancel_url: 'http://localhost:3000/cancel',
+    });
+
+    res.redirect(303, session.url);
+  } catch (err) {
+    console.error('Stripe checkout error:', err);
+    res.status(500).send('Payment failed');
+  }
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
