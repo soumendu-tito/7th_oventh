@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
-
+const DOMAIN = process.env.DOMAIN || 'http://localhost:3000';
 const mongoose = require('mongoose');
 
 const app = express();
@@ -168,8 +168,8 @@ app.post('/create-checkout-session', async (req, res) => {
       payment_method_types: ['card'],
       line_items,
       mode: 'payment',
-      success_url: 'http://localhost:3000/order-success',
-      cancel_url: 'http://localhost:3000/cancel',
+      success_url: `${DOMAIN}/order-success`,
+      cancel_url:  `${DOMAIN}/cancel`,
     });
 
     res.redirect(303, session.url);
